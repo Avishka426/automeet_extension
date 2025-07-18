@@ -4,13 +4,20 @@
   "version": "1.0",
   "description": "Simple Chrome extension built with React and Vite",
   "action": {
-    "default_popup": "index.html"
+    "default_popup": "index.html",
+    "default_title": "AUTOMEET",
+    "default_icon": {
+      
+      "32": "meta.png"
+      
+    }
   },
   "permissions": ["storage","scripting", "activeTab"],
   "host_permissions": [
     "http://localhost:8080/*",
     "http://127.0.0.1:8080/*"
   ],
+ 
   "content_security_policy": {
     "extension_pages": "script-src 'self'; object-src 'self';"
   },

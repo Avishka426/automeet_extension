@@ -1,15 +1,9 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
-
-const SuccessStep = ({ onToCalendar, message }) => {
-  const handleToCalendar = () => {
-    if (onToCalendar) {
-      onToCalendar();
-    }
-    // For Vite/React Router, you would use navigate programmatically
-    // or handle the redirect logic here
-    window.location.href = '/';
-  };
+const SuccessStep = ({  message }) => {
+  const navigate = useNavigate();
+  
 
   return (
     <div className="success-step animate-fade-in font-inter d-flex flex-column align-items-start justify-content-center h-100">
@@ -28,9 +22,9 @@ const SuccessStep = ({ onToCalendar, message }) => {
       <button
         type="button"
         className="btn btn-primary btn-lg px-4 mt-4"
-        onClick={handleToCalendar}
+        onClick={() => navigate('/home')}
       >
-        To my calendar
+        Go to Home
       </button>
     </div>
   );

@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { FaCalendarAlt, FaCheckCircle, FaSearch, FaChevronDown } from 'react-icons/fa';
+import { FaCalendarAlt, FaCheckCircle, FaSearch, FaChevronDown, FaArrowLeft } from 'react-icons/fa';
 import Calendar from './Calendar';
 import FormStepNavigator from './FormStepNavigator';
 import SuccessStep from './SuccessStep';
 import axios from 'axios';
 import '../../styles/global.css';
+import { useNavigate } from 'react-router-dom';
 
 const DirectScheduleForm = () => {
   const [currentStep, setCurrentStep] = useState(1);
@@ -29,7 +30,7 @@ const DirectScheduleForm = () => {
   const [error, setError] = useState('');
   const [titleError, setTitleError] = useState('');
   const [participantError, setParticipantError] = useState('');
-  const [isSubmitted, setIsSubmitted] = useState(false); // New state for button disable
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   // Refs for detecting clicks outside the dropdown
   const startTimeRef = useRef(null);
@@ -144,7 +145,7 @@ const DirectScheduleForm = () => {
         repeat
       };
       console.log(meetingPayload);
-      const response = await axios.post('http://localhost:8080/api/direct/meetings', meetingPayload, {
+      await axios.post('http://localhost:8080/api/direct/meetings', meetingPayload, {
         headers: {
           'Content-Type': 'application/json'
         },
@@ -356,14 +357,47 @@ const DirectScheduleForm = () => {
     console.log('Redirecting to calendar');
     // Implementation for actual redirection
   };
+  const navigate = useNavigate();
 
   return (
-    <div className="direct-schedule-form h-100 font-inter " style={{ maxWidth: '500px', padding: '20px', margin: '0 auto', backgroundColor: '#f5f8fa' }}>
-      {currentStep !== 3 && (
-        <h3 className="mb-4 fw-bold">
-          Direct Schedule <br /> A Meeting
-        </h3>
-      )}
+    <div 
+      className="direct-schedule-form h-100 font-inter" 
+      style={{ 
+        width: '500px',
+        maxWidth: '500px',
+        minWidth: '500px',
+        padding: '20px',
+        margin: '0 auto',
+        backgroundColor: '#f5f8fa',
+        boxSizing: 'border-box'
+      }}
+    >
+      {/* Header with Back Button */}
+      <div className="d-flex align-items-center mb-4" style={{ width: '100%' }}>
+        <button
+          type="button"
+          className="btn btn-outline-secondary me-3"
+          onClick={() => navigate('/')}
+          style={{
+            width: '40px',
+            height: '40px',
+            borderRadius: '8px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            border: '1px solid #dee2e6',
+            backgroundColor: '#fff',
+            color: '#6c757d'
+          }}
+        >
+          <FaArrowLeft />
+        </button>
+        {currentStep !== 3 && (
+          <h3 className="mb-0 fw-bold" style={{ flex: 1 }}>
+            Direct Schedule A Meeting
+          </h3>
+        )}
+      </div>
       
       {error && (
         <div className="alert alert-danger mb-3">
@@ -374,7 +408,7 @@ const DirectScheduleForm = () => {
       <form className="flex-grow-1">
         {/* Step 1: Meeting Details */}
         {currentStep === 1 && (
-          <div className="animate-fade-in">
+          <div className="animate-fade-in" style={{ width: '100%' }}>
             <div className="mb-4 fs-6">
               <label className="form-label fw-medium">Title</label>
               <input
@@ -388,6 +422,7 @@ const DirectScheduleForm = () => {
                     setTitleError('');
                   }
                 }}
+                style={{ width: '100%' }}
               />
               {titleError && (
                 <div className="invalid-feedback">
@@ -397,13 +432,18 @@ const DirectScheduleForm = () => {
             </div>
 
             {/* Time Slot Selection */}
-            <div className="mb-4">
+            <div className="mb-4" style={{ width: '100%' }}>
               <label className="form-label fw-medium">Time slot</label>
-              <div className="p-2 bg-light rounded position-relative time-slot-section">
-                <div className="d-flex align-items-center gap-2">
+              <div className="p-2 bg-light rounded position-relative time-slot-section" style={{ width: '100%' }}>
+                <div className="d-flex align-items-center gap-2" style={{ width: '100%', flexWrap: 'wrap' }}>
                   <div
                     className="d-flex align-items-center bg-white py-2 px-3 rounded"
-                    style={{ cursor: "pointer", minWidth: "190px" }}
+                    style={{ 
+                      cursor: "pointer", 
+                      flex: '1',
+                      minWidth: '150px',
+                      maxWidth: '180px'
+                    }}
                     onClick={() => setShowCalendar(!showCalendar)}
                   >
                     <div className="text-center flex-grow-1">
@@ -427,12 +467,12 @@ const DirectScheduleForm = () => {
                   )}
 
                   {/* Start Time Selection */}
-                  <div className="position-relative" ref={startTimeRef}>
+                  <div className="position-relative" ref={startTimeRef} style={{ flex: '1', minWidth: '90px', maxWidth: '100px' }}>
                     <input
                       type="text"
-                      className="form-control bg-white py-2 px-3 rounded"
-                      style={{ minWidth: "100px", cursor: "pointer" }}
-                      placeholder="HH:MM AM/PM"
+                      className="form-control bg-white py-2 px-2 rounded"
+                      style={{ width: '100%', cursor: "pointer", fontSize: '0.9rem' }}
+                      placeholder="Start"
                       value={startTime}
                       onChange={(e) => setStartTime(e.target.value)}
                       onFocus={() => setShowStartTime(true)}
@@ -441,7 +481,7 @@ const DirectScheduleForm = () => {
                     {showStartTime && (
                       <div
                         className="position-absolute bg-white shadow p-3 rounded mt-1"
-                        style={{ top: "100%", left: "0", zIndex: 10, maxHeight: "200px", overflowY: "auto" }}
+                        style={{ top: "100%", left: "0", zIndex: 10, maxHeight: "200px", overflowY: "auto", width: '120px' }}
                       >
                         {generateTimeOptions().map((time, index) => (
                           <div
@@ -458,12 +498,12 @@ const DirectScheduleForm = () => {
                   </div>
 
                   {/* End Time Selection */}
-                  <div className="position-relative" ref={endTimeRef}>
+                  <div className="position-relative" ref={endTimeRef} style={{ flex: '1', minWidth: '90px', maxWidth: '100px' }}>
                     <input
                       type="text"
-                      className="form-control bg-white py-2 px-3 rounded"
-                      style={{ minWidth: "100px", cursor: "pointer" }}
-                      placeholder="HH:MM AM/PM"
+                      className="form-control bg-white py-2 px-2 rounded"
+                      style={{ width: '100%', cursor: "pointer", fontSize: '0.9rem' }}
+                      placeholder="End"
                       value={endTime}
                       onChange={(e) => setEndTime(e.target.value)}
                       onFocus={() => setShowEndTime(true)}
@@ -472,7 +512,7 @@ const DirectScheduleForm = () => {
                     {showEndTime && (
                       <div
                         className="position-absolute bg-white shadow p-3 rounded mt-1"
-                        style={{ top: "100%", left: "0", zIndex: 10, maxHeight: "200px", overflowY: "auto" }}
+                        style={{ top: "100%", left: "0", zIndex: 10, maxHeight: "200px", overflowY: "auto", width: '120px' }}
                       >
                         {generateTimeOptions().map((time, index) => (
                           <div
@@ -490,9 +530,9 @@ const DirectScheduleForm = () => {
 
                   <button
                     type="button"
-                    className="btn btn-primary d-flex align-items-center"
+                    className="btn btn-primary d-flex align-items-center justify-content-center"
                     style={{
-                      minWidth: "40px",
+                      width: "40px",
                       height: "38px",
                       flexShrink: 0,
                     }}
@@ -509,9 +549,9 @@ const DirectScheduleForm = () => {
                 )}
 
                 {timeSlot && (
-                  <div className="mt-3">
+                  <div className="mt-3" style={{ width: '100%' }}>
                     <h6 className="text-muted mb-2">Selected Time Slot</h6>
-                    <div className="badge bg-white text-dark d-flex align-items-center gap-2 p-2">
+                    <div className="badge bg-white text-dark d-flex align-items-center gap-2 p-2" style={{ width: '100%', fontSize: '0.8rem' }}>
                       {formatTimeSlotDisplay()}
                     </div>
                   </div>
@@ -520,7 +560,7 @@ const DirectScheduleForm = () => {
             </div>
 
             {/* Description and Other Details */}
-            <div className="mb-4">
+            <div className="mb-4" style={{ width: '100%' }}>
               <label className="form-label fw-medium">Description</label>
               <textarea
                 className="form-control"
@@ -528,15 +568,17 @@ const DirectScheduleForm = () => {
                 placeholder="A short description for the meeting"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
+                style={{ width: '100%', resize: 'vertical' }}
               />
             </div>
 
-            <div className="mb-4">
+            <div className="mb-4" style={{ width: '100%' }}>
               <label className="form-label fw-medium">Location</label>
               <select 
                 className="form-select"
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
+                style={{ width: '100%' }}
               >
                 <option value="">Choose a place for the meeting</option>
                 <option value="Conference Room">Conference Room</option>
@@ -546,12 +588,13 @@ const DirectScheduleForm = () => {
               </select>
             </div>
 
-            <div className="mb-4">
+            <div className="mb-4" style={{ width: '100%' }}>
               <label className="form-label fw-medium">Repeat</label>
               <select 
                 className="form-select"
                 value={repeat}
                 onChange={(e) => setRepeat(e.target.value)}
+                style={{ width: '100%' }}
               >
                 <option value="none">Does not repeat</option>
                 <option value="daily">Daily</option>
@@ -567,12 +610,19 @@ const DirectScheduleForm = () => {
 
         {/* Step 2: Add Participants */}
         {currentStep === 2 && (
-          <div className="animate-fade-in participant-section">
-            <div className="mb-4">
+          <div 
+            className="animate-fade-in participant-section" 
+            style={{ 
+              width: '100%',
+              maxWidth: '500px',
+              boxSizing: 'border-box'
+            }}
+          >
+            <div className="mb-4" style={{ width: '100%' }}>
               <h4 className="form-label fw-medium mb-4">Add participants</h4>
               
-              <div className="mb-3 position-relative" ref={contactDropdownRef}>
-                <div className={`input-group ${participantError ? 'is-invalid' : ''}`}>
+              <div className="mb-3 position-relative" ref={contactDropdownRef} style={{ width: '100%' }}>
+                <div className={`input-group ${participantError ? 'is-invalid' : ''}`} style={{ width: '100%' }}>
                   <input
                     type="text"
                     className={`form-control ${participantError ? 'is-invalid' : ''}`}
@@ -584,6 +634,7 @@ const DirectScheduleForm = () => {
                     }}
                     onFocus={() => setShowContactDropdown(true)}
                     disabled={isLoading || isSubmitted}
+                    style={{ flex: '1' }}
                   />
                   <button
                     type="button"
@@ -605,11 +656,13 @@ const DirectScheduleForm = () => {
                 {/* Move dropdown inside the container */}
                 {showContactDropdown && !isLoading && !isSubmitted && (
                   <div 
-                    className="position-absolute bg-white shadow rounded mt-1 w-100"
+                    className="position-absolute bg-white shadow rounded mt-1"
                     style={{ 
                       zIndex: 1000, 
                       maxHeight: '200px', 
-                      overflowY: 'auto'
+                      overflowY: 'auto',
+                      width: '100%',
+                      left: '0'
                     }}
                   >
                     {filteredContacts.length > 0 ? (
@@ -618,21 +671,21 @@ const DirectScheduleForm = () => {
                           key={contact.id}
                           className="d-flex align-items-center p-2 hover-bg-light"
                           onClick={() => handleAddParticipant(contact)}
-                          style={{ cursor: 'pointer' }}
+                          style={{ cursor: 'pointer', width: '100%' }}
                         >
                           <img 
                             src={contact.profileImage || '/profile.png'} 
                             alt={contact.username}
                             className="rounded-circle me-2"
-                            style={{ width: '30px', height: '30px' }}
+                            style={{ width: '30px', height: '30px', flexShrink: 0 }}
                             onError={(e) => {
                               e.target.onerror = null;
                               e.target.src = '/profile.png';
                             }}
                           />
-                          <div>
-                            <div className="fw-medium">{contact.name || contact.username}</div>
-                            <small className="text-muted">{contact.email}</small>
+                          <div style={{ flex: '1', minWidth: '0' }}>
+                            <div className="fw-medium text-truncate">{contact.name || contact.username}</div>
+                            <small className="text-muted text-truncate d-block">{contact.email}</small>
                           </div>
                         </div>
                       ))
@@ -646,39 +699,43 @@ const DirectScheduleForm = () => {
               </div>
 
               {participants.length > 0 ? (
-                participants.map((participant) => (
-                  <div 
-                    key={participant.id} 
-                    className="d-flex align-items-center bg-light p-3 rounded mb-2"
-                  >
-                    <div className="me-auto d-flex align-items-center">
-                      <img 
-                        src={participant.profileImage || '/profile.png'} 
-                        alt="participant" 
-                        className="rounded-circle me-3"
-                        style={{width: '40px', height: '40px'}}
-                        onError={(e) => {
-                          e.target.onerror = null;
-                          e.target.src = '/profile.png';
-                        }}
-                      />
-                      <div>
-                        <div className="fw-bold">{participant.name || participant.username}</div>
-                        <small className="text-muted">{participant.role || participant.email || 'No details'}</small>
-                      </div>
-                    </div>
-                    <button 
-                      type="button" 
-                      className="btn btn-outline-danger"
-                      onClick={() => handleRemoveParticipant(participant.id)}
-                      disabled={isLoading || isSubmitted}
+                <div style={{ width: '100%' }}>
+                  {participants.map((participant) => (
+                    <div 
+                      key={participant.id} 
+                      className="d-flex align-items-center bg-light p-3 rounded mb-2"
+                      style={{ width: '100%' }}
                     >
-                      Remove
-                    </button>
-                  </div>
-                ))
+                      <div className="me-auto d-flex align-items-center" style={{ flex: '1', minWidth: '0' }}>
+                        <img 
+                          src={participant.profileImage || '/profile.png'} 
+                          alt="participant" 
+                          className="rounded-circle me-3"
+                          style={{ width: '40px', height: '40px', flexShrink: 0 }}
+                          onError={(e) => {
+                            e.target.onerror = null;
+                            e.target.src = '/profile.png';
+                          }}
+                        />
+                        <div style={{ flex: '1', minWidth: '0' }}>
+                          <div className="fw-bold text-truncate">{participant.name || participant.username}</div>
+                          <small className="text-muted text-truncate d-block">{participant.role || participant.email || 'No details'}</small>
+                        </div>
+                      </div>
+                      <button 
+                        type="button" 
+                        className="btn btn-outline-danger btn-sm"
+                        onClick={() => handleRemoveParticipant(participant.id)}
+                        disabled={isLoading || isSubmitted}
+                        style={{ flexShrink: 0 }}
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  ))}
+                </div>
               ) : (
-                <div className="text-center py-4 text-muted">
+                <div className="text-center py-4 text-muted" style={{ width: '100%' }}>
                   No participants added yet
                 </div>
               )}
@@ -688,23 +745,27 @@ const DirectScheduleForm = () => {
 
         {/* Success Step */}
         {currentStep === 3 && (
-          <SuccessStep 
-            onToCalendar={handleToCalendar}
-            message="Your direct meeting has been successfully scheduled!"
-          />
+          <div style={{ width: '100%' }}>
+            <SuccessStep 
+              onToCalendar={handleToCalendar}
+              message="Your direct meeting has been successfully scheduled!"
+            />
+          </div>
         )}
 
         {/* Step Navigator */}
         {currentStep !== 3 && (
-          <FormStepNavigator 
-            currentStep={currentStep} 
-            totalSteps={3} 
-            onNext={handleNext}
-            onBack={handleBack}
-            isLoading={isLoading}
-            nextLabel={currentStep === 2 ? "Create Meeting" : "Next"}
-            isDisabled={currentStep === 2 && isSubmitted} // Pass disabled state to FormStepNavigator
-          />
+          <div style={{ width: '100%' }}>
+            <FormStepNavigator 
+              currentStep={currentStep} 
+              totalSteps={3} 
+              onNext={handleNext}
+              onBack={handleBack}
+              isLoading={isLoading}
+              nextLabel={currentStep === 2 ? "Create Meeting" : "Next"}
+              isDisabled={currentStep === 2 && isSubmitted}
+            />
+          </div>
         )}
       </form>
     </div>

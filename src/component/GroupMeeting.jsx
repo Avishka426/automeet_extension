@@ -1,12 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { FaCalendarAlt, FaCheckCircle, FaSearch, FaChevronDown } from 'react-icons/fa';
+import { FaCalendarAlt, FaCheckCircle, FaSearch, FaChevronDown, FaArrowLeft } from 'react-icons/fa';
 import FormStepNavigator from './FormStepNavigator';
 import Calendar from './Calendar';
 import SuccessStep from './SuccessStep';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+
 
 
 const GroupMeetingForm = () => {
+  const navigate = useNavigate();
+
   // Add these missing state variables
   const [contacts, setContacts] = useState([]);
   const [participants, setParticipants] = useState([]);
@@ -32,7 +36,7 @@ const GroupMeetingForm = () => {
   const [participantError, setParticipantError] = useState('');
   const [dateError, setDateError] = useState('');
   const [timeError, setTimeError] = useState('');
-  const [isSubmitted, setIsSubmitted] = useState(false); // New state for button disable
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   // Refs for detecting clicks outside the dropdown
   const startTimeRef = useRef(null);
@@ -406,17 +410,50 @@ const GroupMeetingForm = () => {
   };
 
   const handleToCalendar = () => {
-    console.log('Redirecting to calendar');
-    // Implementation for actual redirection
+    console.log('Redirecting to home');
+    navigate('/'); // Navigate to home component
   };
 
+
   return (
-    <div className="group-meeting-form h-100 font-inter  "style={{ maxWidth: '500px', padding: '20px', margin: '0 auto', backgroundColor: '#f5f8fa' }}>
-      {currentStep !== 3 && (
-        <h3 className="mb-4 fw-bold">
-          Create Group <br /> Meeting
-        </h3>
-      )}
+    <div 
+      className="group-meeting-form h-100 font-inter"
+      style={{ 
+        width: '500px',
+        maxWidth: '500px',
+        minWidth: '500px',
+        padding: '20px',
+        margin: '0 auto',
+        backgroundColor: '#f5f8fa',
+        boxSizing: 'border-box'
+      }}
+    >
+      {/* Header with Back Button */}
+      <div className="d-flex align-items-center mb-4" style={{ width: '100%' }}>
+        <button
+          type="button"
+          className="btn btn-outline-secondary me-3"
+          onClick={() => navigate('/')}
+          style={{
+            width: '40px',
+            height: '40px',
+            borderRadius: '8px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            border: '1px solid #dee2e6',
+            backgroundColor: '#fff',
+            color: '#6c757d'
+          }}
+        >
+          <FaArrowLeft />
+        </button>
+        {currentStep !== 3 && (
+          <h3 className="mb-0 fw-bold" style={{ flex: 1 }}>
+            Create Group Meeting
+          </h3>
+        )}
+      </div>
 
       {error && (
         <div className="alert alert-danger mb-3">
@@ -426,8 +463,8 @@ const GroupMeetingForm = () => {
 
       <form className="flex-grow-1">
         {currentStep === 1 && (
-          <div className="animate-fade-in">
-            <div className="mb-4 fs-6">
+          <div className="animate-fade-in" style={{ width: '100%' }}>
+            <div className="mb-4 fs-6" style={{ width: '100%' }}>
               <label className="form-label fw-medium">Title</label>
               <input
                 type="text"
@@ -441,6 +478,7 @@ const GroupMeetingForm = () => {
                   }
                 }}
                 required
+                style={{ width: '100%' }}
               />
               {titleError && (
                 <div className="invalid-feedback d-block">
@@ -449,13 +487,18 @@ const GroupMeetingForm = () => {
               )}
             </div>
 
-            <div className="mb-4">
+            <div className="mb-4" style={{ width: '100%' }}>
               <label className="form-label fw-medium">Time slot</label>
-              <div className="p-2 bg-light rounded position-relative time-slot-section">
-                <div className="d-flex align-items-center gap-2">
+              <div className="p-2 bg-light rounded position-relative time-slot-section" style={{ width: '100%' }}>
+                <div className="d-flex align-items-center gap-2" style={{ width: '100%', flexWrap: 'wrap' }}>
                   <div
                     className="d-flex align-items-center bg-white py-2 px-3 rounded"
-                    style={{ cursor: "pointer", minWidth: "190px" }}
+                    style={{ 
+                      cursor: "pointer", 
+                      flex: '1',
+                      minWidth: '150px',
+                      maxWidth: '180px'
+                    }}
                     onClick={() => setShowCalendar(!showCalendar)}
                   >
                     <div className="text-center flex-grow-1">
@@ -478,12 +521,12 @@ const GroupMeetingForm = () => {
                     </div>
                   )}
 
-                  <div className="position-relative" ref={startTimeRef}>
+                  <div className="position-relative" ref={startTimeRef} style={{ flex: '1', minWidth: '90px', maxWidth: '100px' }}>
                     <input
                       type="text"
-                      className="form-control bg-white py-2 px-3 rounded"
-                      style={{ minWidth: "100px", cursor: "pointer" }}
-                      placeholder="HH:MM AM/PM"
+                      className="form-control bg-white py-2 px-2 rounded"
+                      style={{ width: '100%', cursor: "pointer", fontSize: '0.9rem' }}
+                      placeholder="Start"
                       value={startTime}
                       onChange={(e) => handleTimeChange(e.target.value, "start")}
                       onDoubleClick={() => handleDoubleClick("start")}
@@ -491,7 +534,7 @@ const GroupMeetingForm = () => {
                     {showStartTime && (
                       <div
                         className="position-absolute bg-white shadow p-3 rounded mt-1"
-                        style={{ top: "100%", left: "0", zIndex: 10, maxHeight: "200px", overflowY: "auto" }}
+                        style={{ top: "100%", left: "0", zIndex: 10, maxHeight: "200px", overflowY: "auto", width: '120px' }}
                       >
                         {generateTimeOptions().map((time, index) => (
                           <div
@@ -507,12 +550,12 @@ const GroupMeetingForm = () => {
                     )}
                   </div>
 
-                  <div className="position-relative" ref={endTimeRef}>
+                  <div className="position-relative" ref={endTimeRef} style={{ flex: '1', minWidth: '90px', maxWidth: '100px' }}>
                     <input
                       type="text"
-                      className="form-control bg-white py-2 px-3 rounded"
-                      style={{ minWidth: "100px", cursor: "pointer" }}
-                      placeholder="HH:MM AM/PM"
+                      className="form-control bg-white py-2 px-2 rounded"
+                      style={{ width: '100%', cursor: "pointer", fontSize: '0.9rem' }}
+                      placeholder="End"
                       value={endTime}
                       onChange={(e) => handleTimeChange(e.target.value, "end")}
                       onDoubleClick={() => handleDoubleClick("end")}
@@ -520,7 +563,7 @@ const GroupMeetingForm = () => {
                     {showEndTime && (
                       <div
                         className="position-absolute bg-white shadow p-3 rounded mt-1"
-                        style={{ top: "100%", left: "0", zIndex: 10, maxHeight: "200px", overflowY: "auto" }}
+                        style={{ top: "100%", left: "0", zIndex: 10, maxHeight: "200px", overflowY: "auto", width: '120px' }}
                       >
                         {generateTimeOptions().map((time, index) => (
                           <div
@@ -538,9 +581,9 @@ const GroupMeetingForm = () => {
 
                   <button
                     type="button"
-                    className="btn btn-primary d-flex align-items-center"
+                    className="btn btn-primary d-flex align-items-center justify-content-center"
                     style={{
-                      minWidth: "40px",
+                      width: "40px",
                       height: "38px",
                       flexShrink: 0,
                     }}
@@ -557,20 +600,33 @@ const GroupMeetingForm = () => {
                 )}
 
                 {timeSlots.length > 0 && (
-                  <div className="mt-3">
+                  <div className="mt-3" style={{ width: '100%' }}>
                     <h6 className="text-muted mb-2">Added Time Slots</h6>
-                    <div className="d-flex flex-wrap gap-2">
+                    <div className="d-flex flex-wrap gap-2" style={{ width: '100%' }}>
                       {timeSlots.map((slot) => (
                         <div 
                           key={slot.id} 
                           className="badge bg-white text-dark d-flex align-items-center gap-2 p-2"
+                          style={{ 
+                            fontSize: '0.75rem', 
+                            maxWidth: '100%',
+                            wordBreak: 'break-word'
+                          }}
                         >
-                          {formatTimeSlotDisplay(slot)}
+                          <span className="text-truncate">{formatTimeSlotDisplay(slot)}</span>
                           <button 
                             type="button" 
-                            className="btn btn-sm btn-outline-danger p-0 ms-2"
+                            className="btn btn-sm btn-outline-danger p-0"
                             onClick={() => handleRemoveTimeSlot(slot.id)}
-                            style={{ width: '20px', height: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                            style={{ 
+                              width: '18px', 
+                              height: '18px', 
+                              display: 'flex', 
+                              alignItems: 'center', 
+                              justifyContent: 'center',
+                              flexShrink: 0,
+                              fontSize: '12px'
+                            }}
                           >
                             &times;
                           </button>
@@ -582,12 +638,13 @@ const GroupMeetingForm = () => {
               </div>
             </div>
 
-            <div className="mb-4">
+            <div className="mb-4" style={{ width: '100%' }}>
               <label className="form-label fw-medium">Duration</label>
               <select 
                 className="form-select"
                 value={duration}
                 onChange={(e) => setDuration(e.target.value)}
+                style={{ width: '100%' }}
               >
                 <option value="30">30 minutes</option>
                 <option value="45">45 minutes</option>
@@ -597,7 +654,7 @@ const GroupMeetingForm = () => {
               </select>
             </div>
 
-            <div className="mb-4">
+            <div className="mb-4" style={{ width: '100%' }}>
               <label className="form-label fw-medium">Description</label>
               <textarea
                 className="form-control"
@@ -605,15 +662,17 @@ const GroupMeetingForm = () => {
                 placeholder="A short description for the meeting"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
+                style={{ width: '100%', resize: 'vertical' }}
               />
             </div>
 
-            <div className="mb-4">
+            <div className="mb-4" style={{ width: '100%' }}>
               <label className="form-label fw-medium">Location</label>
               <select 
                 className="form-select"
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
+                style={{ width: '100%' }}
               >
                 <option value="">Choose a place for the meeting</option>
                 <option value="Conference Room">Conference Room</option>
@@ -623,12 +682,13 @@ const GroupMeetingForm = () => {
               </select>
             </div>
 
-            <div className="mb-4">
+            <div className="mb-4" style={{ width: '100%' }}>
               <label className="form-label fw-medium">Repeat</label>
               <select 
                 className="form-select"
                 value={repeat}
                 onChange={(e) => setRepeat(e.target.value)}
+                style={{ width: '100%' }}
               >
                 <option value="none">Does not repeat</option>
                 <option value="daily">Daily</option>
@@ -643,12 +703,12 @@ const GroupMeetingForm = () => {
         )}
 
         {currentStep === 2 && (
-          <div className="animate-fade-in">
-            <div className="mb-4">
+          <div className="animate-fade-in participant-section" style={{ width: '100%' }}>
+            <div className="mb-4" style={{ width: '100%' }}>
               <h4 className="form-label fw-medium mb-3">Add participants</h4>
               
-              <div className="mb-3 position-relative" ref={contactDropdownRef}>
-                <div className={`input-group ${participantError ? 'is-invalid' : ''}`}>
+              <div className="mb-3 position-relative" ref={contactDropdownRef} style={{ width: '100%' }}>
+                <div className={`input-group ${participantError ? 'is-invalid' : ''}`} style={{ width: '100%' }}>
                   <input
                     type="text"
                     className={`form-control ${participantError ? 'is-invalid' : ''}`}
@@ -660,6 +720,7 @@ const GroupMeetingForm = () => {
                     }}
                     onFocus={() => setShowContactDropdown(true)}
                     disabled={isLoading || isSubmitted}
+                    style={{ flex: '1' }}
                   />
                   <button
                     type="button"
@@ -679,8 +740,14 @@ const GroupMeetingForm = () => {
                 
                 {showContactDropdown && filteredContacts.length > 0 && !isLoading && !isSubmitted && (
                   <div 
-                    className="position-absolute w-100 bg-white shadow rounded mt-1"
-                    style={{ zIndex: 1000, maxHeight: '300px', overflowY: 'auto' }}
+                    className="position-absolute bg-white shadow rounded mt-1"
+                    style={{ 
+                      zIndex: 1000, 
+                      maxHeight: '200px', 
+                      overflowY: 'auto',
+                      width: '100%',
+                      left: '0'
+                    }}
                   >
                     {filteredContacts.map(contact => (
                       <div 
@@ -689,21 +756,22 @@ const GroupMeetingForm = () => {
                           participants.some(p => p.id === contact.id) ? 'bg-light' : ''
                         }`}
                         onClick={() => handleAddParticipant(contact)}
+                        style={{ width: '100%' }}
                       >
-                        <div className="d-flex align-items-center">
+                        <div className="d-flex align-items-center" style={{ width: '100%' }}>
                           <img 
                             src={contact.profileImage || '/profile.png'} 
                             alt="participant" 
                             className="rounded-circle me-3"
-                            style={{width: '30px', height: '30px'}}
+                            style={{ width: '30px', height: '30px', flexShrink: 0 }}
                             onError={(e) => {
                               e.target.onerror = null;
                               e.target.src = '/profile.png';
                             }}
                           />
-                          <div>
-                            <div className="fw-bold">{contact.name || contact.username}</div>
-                            <small className="text-muted">{contact.role || contact.email || 'No details'}</small>
+                          <div style={{ flex: '1', minWidth: '0' }}>
+                            <div className="fw-bold text-truncate">{contact.name || contact.username}</div>
+                            <small className="text-muted text-truncate d-block">{contact.role || contact.email || 'No details'}</small>
                           </div>
                         </div>
                       </div>
@@ -713,8 +781,12 @@ const GroupMeetingForm = () => {
 
                 {showContactDropdown && filteredContacts.length === 0 && (
                   <div 
-                    className="position-absolute w-100 bg-white shadow rounded mt-1 p-2"
-                    style={{ zIndex: 1000 }}
+                    className="position-absolute bg-white shadow rounded mt-1 p-2"
+                    style={{ 
+                      zIndex: 1000,
+                      width: '100%',
+                      left: '0'
+                    }}
                   >
                     <div className="text-muted">No contacts found</div>
                   </div>
@@ -722,39 +794,43 @@ const GroupMeetingForm = () => {
               </div>
 
               {participants.length > 0 ? (
-                participants.map((participant) => (
-                  <div 
-                    key={participant.id} 
-                    className="d-flex align-items-center bg-light p-3 rounded mb-2"
-                  >
-                    <div className="me-auto d-flex align-items-center">
-                      <img 
-                        src={participant.profileImage || '/profile.png'} 
-                        alt="participant" 
-                        className="rounded-circle me-3"
-                        style={{width: '40px', height: '40px'}}
-                        onError={(e) => {
-                          e.target.onerror = null;
-                          e.target.src = '/profile.png';
-                        }}
-                      />
-                      <div>
-                        <div className="fw-bold">{participant.name || participant.username}</div>
-                        <small className="text-muted">{participant.role || participant.email || 'No details'}</small>
-                      </div>
-                    </div>
-                    <button 
-                      type="button" 
-                      className="btn btn-outline-danger"
-                      onClick={() => handleRemoveParticipant(participant.id)}
-                      disabled={isLoading || isSubmitted}
+                <div style={{ width: '100%' }}>
+                  {participants.map((participant) => (
+                    <div 
+                      key={participant.id} 
+                      className="d-flex align-items-center bg-light p-3 rounded mb-2"
+                      style={{ width: '100%' }}
                     >
-                      Remove
-                    </button>
-                  </div>
-                ))
+                      <div className="me-auto d-flex align-items-center" style={{ flex: '1', minWidth: '0' }}>
+                        <img 
+                          src={participant.profileImage || '/profile.png'} 
+                          alt="participant" 
+                          className="rounded-circle me-3"
+                          style={{ width: '40px', height: '40px', flexShrink: 0 }}
+                          onError={(e) => {
+                            e.target.onerror = null;
+                            e.target.src = '/profile.png';
+                          }}
+                        />
+                        <div style={{ flex: '1', minWidth: '0' }}>
+                          <div className="fw-bold text-truncate">{participant.name || participant.username}</div>
+                          <small className="text-muted text-truncate d-block">{participant.role || participant.email || 'No details'}</small>
+                        </div>
+                      </div>
+                      <button 
+                        type="button" 
+                        className="btn btn-outline-danger btn-sm"
+                        onClick={() => handleRemoveParticipant(participant.id)}
+                        disabled={isLoading || isSubmitted}
+                        style={{ flexShrink: 0 }}
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  ))}
+                </div>
               ) : (
-                <div className="text-center py-4 text-muted">
+                <div className="text-center py-4 text-muted" style={{ width: '100%' }}>
                   No participants added yet
                 </div>
               )}
@@ -763,23 +839,27 @@ const GroupMeetingForm = () => {
         )}
 
         {currentStep === 3 && (
-          <SuccessStep 
-            onToCalendar={handleToCalendar}
-            message="Your group meeting has been successfully created!"
-          />
+          <div style={{ width: '100%' }}>
+            <SuccessStep 
+              onToCalendar={handleToCalendar}
+              message="Your group meeting has been successfully created!"
+            />
+          </div>
         )}
 
         {/* Step Navigator */}
         {currentStep !== 3 && (
-          <FormStepNavigator 
-            currentStep={currentStep} 
-            totalSteps={3} 
-            onNext={handleNext}
-            onBack={handleBack}
-            isLoading={isLoading}
-            nextLabel={currentStep === 2 ? "Create Meeting" : "Next"}
-            isDisabled={currentStep === 2 && isSubmitted} // Pass disabled state to FormStepNavigator
-          />
+          <div style={{ width: '100%' }}>
+            <FormStepNavigator 
+              currentStep={currentStep} 
+              totalSteps={3} 
+              onNext={handleNext}
+              onBack={handleBack}
+              isLoading={isLoading}
+              nextLabel={currentStep === 2 ? "Create Meeting" : "Next"}
+              isDisabled={currentStep === 2 && isSubmitted}
+            />
+          </div>
         )}
       </form>
     </div>
